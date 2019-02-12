@@ -33,8 +33,6 @@ public class Hw01_Book {
 		book.setUser(null);
 		
 		
-		
-		
 
 	}
 
