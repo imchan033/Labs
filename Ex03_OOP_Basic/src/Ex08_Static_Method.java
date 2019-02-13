@@ -1,4 +1,5 @@
 
+
 public class Ex08_Static_Method {
 	int iv = 100;
 	static int cv = 200;
