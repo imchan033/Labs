@@ -37,15 +37,9 @@ public class Ex01_Array_Quiz {
 		}
 		System.out.printf("결과) max > %d, min > %d \n",max,min);
 		
-		
-		
-		
-		
-		
+	
 		
 	
-		/*
-		
 		int[] number = new int[10];
 		//10개 방의 값을 1~10까지 초기화 하고 싶어요
 		//number[0]
@@ -70,7 +64,6 @@ public class Ex01_Array_Quiz {
 		 단) 2,3 문제는 하나의 for문에서 해결
 		 */
 		
-		/*
 		 for(int i=0 ; i<jumsu.length ; i++) {
 			 sum += jumsu[i];
 			 if(i==jumsu.length-1) {
@@ -78,15 +71,6 @@ public class Ex01_Array_Quiz {
 			 }
 		 }
 		 System.out.printf("총과목수 : [%d], 총점 : [%d], 평균 : [%d]",jumsu.length,sum,average);
-		
-		
-		
-		*/
-		
-		
-		
-		
-		
 		
 	}
 }

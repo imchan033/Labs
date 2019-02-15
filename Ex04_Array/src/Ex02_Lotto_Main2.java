@@ -25,7 +25,7 @@ public class Ex02_Lotto_Main2 {
          //출력하기
          for(int i = 0 ; i < lotto.length ; i++) {
              System.out.println(lotto[i]);
-         }
+         }System.out.println();
 
 
 	}
