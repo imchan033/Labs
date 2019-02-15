@@ -51,12 +51,48 @@ class OverTest{
 	void add(String s, int i) {
 		System.out.println("오버로딩 인정");//parameter의 순서가 다름을 인정합니다
 	}
+	//배열(Array) 배웠으니
+	//초초중급 ...
+	//int[] source = {10,20,30,40,50};
+	//중요*********************자주나옴
+	int[] add(int[] param) { //parameter 로 int 배열의 주소값을 받겠다
+		int[] target = new int[param.length];
+		for(int i=0; i<param.length ; i++) {
+			target[i] = param[i]+1;
+		}
+		return target; //int 타입의 배열의 주소값을 return
+	}
+	
+	
+		//마음대로 코드 작성 (error만 없으면 됩니다.)
+	int[] add(int[] so, int[] so2) {
+		int[] array=null;
+		if (so.length == so2.length) {
+			array = new int[so.length];
+			for (int i = 0; i < so.length; i++) {
+				array[i] = so[i] + so2[i];
+			}
+		}
+		return array;
+	}
+	
+	
+	Human[] add(Human[] human) {
+		//...
+		Human[] h = new Human[human.length];
+		//...
+		return h;
+	}
+	
+	
+	
 	
 }
 
 public class Ex11_method_overloading {
 
 	public static void main(String[] args) {
+		/*
 		System.out.println(100);
 		System.out.println("hello");
 		
@@ -72,7 +108,25 @@ public class Ex11_method_overloading {
 		System.out.println(h.age);
 	
 		ot.add(new Human());
-	
+		*/
+		OverTest ot = new OverTest();
+		//int 타입의 배열의 주소를 주어야...
+		int[] source = {10,20,30,40,50};
+		System.out.println(source);  //source 는 배열의 주소값
+		int[] target = ot.add(source); //[I@15db9742 주소값
+		for(int i=0 ; i<target.length ; i++) {
+			System.out.printf("target[%d] : %d\n",i,target[i]);
+		}
+		
+		//int[] add(int[] so, int[] so2) 실행시 error 없으면 되요
+		int[] so = {1,2,3,4,5};
+		int[] so2 = {10,20,30,40,50};
+		int[] result = ot.add(so, so2);
+		System.out.println("두 배열 같은 행끼리의 합");
+		for(int i=0 ; i<result.length ; i++) {
+			System.out.printf("%d\t",result[i]);
+		}
+		
 	
 	}
 
