@@ -14,8 +14,8 @@ public class Theater {
 	// member field 초기화
 	public Theater() {
 		scanner = new Scanner(System.in);
-		c = 10; // 5행
-		r = 10; // 5열
+		c = 10; // 15행
+		r = 10; // 15열
 		seat = new String[c][r];
 	}
 
@@ -67,6 +67,7 @@ public class Theater {
 
 			if (column < 1 || column >= c || row < 1 || row >= r) {
 				System.out.println("오류! 다시 입력해주세요!");
+				i--;
 			} else {
 				switch (seat[column][row]) {
 				case "[*]":
