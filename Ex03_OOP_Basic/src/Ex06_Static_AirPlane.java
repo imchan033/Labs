@@ -16,6 +16,7 @@ import kr.or.bit.Airplane;
 public class Ex06_Static_AirPlane {
 
 	public static void main(String[] args) {
+		/*
 		Airplane air1 = new Airplane();
 		air1.name = "대한항공";
 		air1.number = 707;
@@ -46,6 +47,14 @@ public class Ex06_Static_AirPlane {
 		Airplane a3 = new Airplane();
 		a.makeAirPlane(709, "진에어");
 		a.airPlaneTotalCount();
+		*/
+		Airplane air = new Airplane(707, "대한항공");
+		air.airplaneInfo();
+		air.airPlaneTotalCount();
+		
+		Airplane air2 = new Airplane(808, "아시아나");
+		air2.airplaneInfo();
+		air2.airPlaneTotalCount();
 		
 	}
 
