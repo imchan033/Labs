@@ -39,7 +39,7 @@ class VendingMachine {
 	}
 	public void operation() {
 		System.out.println("*****담배자판기******");
-		printCigarettes();
+		
 		while(true) {
 			if(isAdult()==true) {
 				payMenu();
@@ -57,13 +57,24 @@ class VendingMachine {
 		
 		
 	}
-	void printCigarettes() {  //담배메뉴출력
-		for(int i=0 ; i<cigar.length ; i++) {
+	
+	//담배메뉴출력
+	void displayMenu() {  
+		for (int i=0; i<this.cigar.length; i++) {
+			// 재고가 있으면서 잔금보다 작은 담배 버튼 on
+			if(this.receivedMoney>=this.cigar[i].cigarPrice && this.inventory[i]>0) {
+				selectCigarette[i]="o";
+			}else {
+				selectCigarette[i]="x";
+			}
+			//출력
 			System.out.printf((1+i)+". %s (%d원) [%s]\n",
 					cigar[i].cigarName,cigar[i].cigarPrice,selectCigarette[i]);
-		}
-		
+		}System.out.println("투입된 금액 : "+receivedMoney+"원");	
 	}
+	 boolean checkChange() {
+		 return false;
+	 }
 	public boolean isAdult() {	// 성인확인
 		System.out.println("성인인증이 필요합니다. 신분증을 입력해주세요!!");
 		int age = scanner.nextInt();
@@ -90,30 +101,30 @@ class VendingMachine {
 	
 	
 	public void selectCigarettes() { // *번째 담배를 선택
-		while (true) {
+		//while (true) {
 			System.out.print("담배 번호를 선택해주세요>");
 			int number = scanner.nextInt() - 1;
 			receivedMoney -= cigar[number].cigarPrice; // 받은돈에서 담배값차감
 			inventory[number]--; // 담배 개수 -1
 			System.out.println(cigar[number].cigarName + "배출!"); // 담배배출
-		}
+		//}
 	}
 	
 	public void payMenu() {	// payAmount는 금액
 		System.out.println("돈을 넣어주세요!");
 		receivedMoney = scanner.nextInt();
-		// 잔돈이 10000원 이상이면 판매, 이하이면 판매중지
-		if(changeAmount>10000) {
-//			판매가능한 담배버튼의 불이 들어온다
-			for (int i=0; i<this.cigar.length; i++) {
-				// 재고가 있으면서 잔금보다 작은 담배 버튼 on
-				if(this.receivedMoney>=this.cigar[i].cigarPrice && this.inventory[i]>0)
-					selectCigarette[i]="o";
-			}printCigarettes(); //담배 메뉴 출력
-		} else {
-			System.out.println("잔돈부족으로 판매중지. 잔돈을 반환합니다.");
-			payRemains();
-		}
+//		// 잔돈이 10000원 이상이면 판매, 이하이면 판매중지
+//		if(changeAmount>10000) {
+// //			판매가능한 담배버튼의 불이 들어온다
+//			for (int i=0; i<this.cigar.length; i++) {
+//				// 재고가 있으면서 잔금보다 작은 담배 버튼 on
+//				if(this.receivedMoney>=this.cigar[i].cigarPrice && this.inventory[i]>0)
+//					selectCigarette[i]="o";
+//			}//담배 메뉴 출력
+//		} else {
+//			System.out.println("잔돈부족으로 판매중지. 잔돈을 반환합니다.");
+//			payRemains();
+//		}
 
 
 	}
@@ -168,7 +179,7 @@ public class Hw01_VendingMachine {
 
 		VendingMachine vm = new VendingMachine();
 		
-		vm.operation();
+		vm.displayMenu();
 
 	}
 
