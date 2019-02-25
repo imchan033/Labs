@@ -25,6 +25,7 @@ public class Theater {
 			switch (menuNumber()) {
 			case 1:
 				selectSeat();
+				
 				break;
 			case 2:
 				printSeat();
