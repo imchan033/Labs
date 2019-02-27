@@ -29,9 +29,6 @@ public class Hw01_bubble_sort {
 		//Ãâ·Â
 		for(int i=0 ; i<A.length ; i++) {
 			System.out.print(A[i]+"\t");
-		}
-		
-		
+		}	
 	}
-
 }

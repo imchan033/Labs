@@ -8,6 +8,7 @@ public class Theater {
 	private int c, r; 	// 좌석 규모
 	private int column; // 행
 	private int row; 	// 열
+	
 	private int number; // 메뉴번호
 	private int person; // 명수
 
