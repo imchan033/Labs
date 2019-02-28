@@ -34,6 +34,7 @@ public class Ex04_ArrayList_Parameter {
 	public static void main(String[] args) {
 		EmpData empdata = new EmpData();
 		System.out.println(empdata.toString());
+		
 		System.out.println(empdata.getAlist().toString()); //¿Á¡§¿«
 		
 		ArrayList li = new ArrayList();
