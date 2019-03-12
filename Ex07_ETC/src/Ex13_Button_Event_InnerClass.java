@@ -3,6 +3,33 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Label;
 import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+class Btn_Handler implements ActionListener{
+	private TextField txtid;
+	private TextField txtpwd;
+	
+	public Btn_Handler(TextField txtid, TextField txtpwd) {
+		//생성자를 통해서 TextField 주소값
+		this.txtid=txtid; //주소값 할당
+		this.txtpwd=txtpwd; //
+	}
+	//id, pwd입력하고 버튼을 클릭하면 id,pwd 값을 가지고 와서 내가 미리 지정한 값과 일치하는지 확인
+	//클릭 이벤트가 발생하면 호출되는 함수(핸들러 함수)
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		//필요한 로직
+		//System.out.println("ActionEvent 발생지의 객체 주소 : "+e.getSource());
+		System.out.println(txtid.getText()+"/"+txtpwd.getText());
+		if(txtid.getText().equals("hong")) {
+			System.out.println("방가방가 / "+txtpwd.getText());
+		}else
+			System.out.println("누구세요");
+		
+	}
+	
+}
 
 class LoginForm extends Frame{
 	Label lbl_id;
@@ -32,6 +59,11 @@ class LoginForm extends Frame{
 		this.add(txt_pwd);
 		
 		this.add(btn_ok);
+		
+		//버튼에 클릭 이벤트 처리하기
+		//조건 : parameter 로 처리되는 객체는 반드시 ActionListener 구현하는 객체
+		Btn_Handler btn_handler = new Btn_Handler(txt_id,txt_pwd);
+		btn_ok.addActionListener(btn_handler);
 	}
 	
 	
