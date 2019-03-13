@@ -1,466 +1,678 @@
 package kr.or.bit.team1;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Stack;
+import java.util.Set;
+
+//import kr.or.bit.team1.util.TeamFormat;
+
+enum OrderStatus {
+	ORDER, DISCOUNT, CANCEL, REFUND, PAYED
+};
+
+enum PayType {
+	CASH, CARD
+};
 
 
-// °áÁ¦, È¸¿øÀÌ ¸ğÈ£ÇÔ
 
-
-//Order ±â´É
-//cancel
-//discount
-//refund
-enum OrderStatus {ORDER, DISCOUNT, CANCEL, REFUND, PAYED};
-
-//Çö±İ
-//Ä«µå
-enum PayType {CASH, CARD};
 
 class Menu {
 	String name;
 	int price;
-	
+//	HashMap <String, Integer> menu;
+
+//	public Menu() {
+//		menu=new HashMap<String, Integer>();
+//	}
 	public Menu(String name, int price) {
 		super();
 		this.name = name;
 		this.price = price;
-	}
-	
+	}	
+
 	@Override
 	public String toString() {
 		return "Menu [name=" + name + ", price=" + price + "]";
 	}
-	
 }
 
 class Table {
-	int tableNo;
-	OrderList orderList;
-	//HashMap<Integer, OrderList> tables= new HashMap<Integer, OrderList>();
+
+	HashMap<Integer, OrderList> tables;
 	Date date;
 	boolean isPayed;
+
+	//ì •ì¼ì°¬ : ìƒì„±ìë³€ê²½
+	public Table() {
+		tables = new HashMap<Integer, OrderList>();
+		this.date = new Date();
+		this.isPayed = false;
+
+	}
+
+	public void showTable() {
+
+	}
+
+	// ì •ì¼ì°¬ : 
+	// addOrdetList ì¶”ê°€
+	public void addOrderList(Integer tableNo, OrderList orderList) {
+		// í…Œì´ë¸”ì— order add
+		tables.put(tableNo, orderList);
+	}
+
+//	// ê²°ì œ (í…Œì´ë¸”)
+//	public void payTableCash(Integer tableNo, Integer amount) {// ì´í˜ì°¬
+//		// í…Œì´ë¸”ì—ì„œ orderë¥¼ í•˜ë‚˜ì”© ê°€ì ¸ì™€ì„œ ê²°ì œí•¨
+//	}
+//
+//	public void payTableCard(Integer tableNo) {// ê¶Œìˆœì¡°
+//		// í…Œì´ë¸”ì—ì„œ orderë¥¼ í•˜ë‚˜ì”© ê°€ì ¸ì™€ì„œ ê²°ì œí•¨
+//	}
+//
+//	// ê²°ì œ (í…Œì´ë¸”)
+//	public void payTableCardAll(Integer tableNo) { // ì¼ì°¬ë‹˜
+//		// í…Œì´ë¸”ì˜ orderë¥¼ í•œê°€ì§€ ê²°ì œí˜•ì‹ìœ¼ë¡œ
+//	}
+//
+//	public void payTableCashAll(Integer tableNo, Integer amount) {// ì´í˜ì°¬
+//		// í…Œì´ë¸”ì˜ orderë¥¼ í•œê°€ì§€ ê²°ì œí˜•ì‹ìœ¼ë¡œ
+//	}
+
+
+	// í…Œì´ë¸”ì´ë™
+	public void moveTable(int fromTable, int toTable) {// ê°•ê¸°í›ˆ
+		OrderList temp = new OrderList();
+		temp = tables.get(fromTable);
+		tables.put(toTable, temp);
+		tables.remove(fromTable);
+	}
+
+	// í…Œì´ë¸”ì£¼ë¬¸í•©ì¹˜ê¸°
+	public void mergeTable(int fromTable, int toTable) {// ê¶Œì˜ˆì§€
+
+	}
 	
-	//Å×ÀÌºíÀÌµ¿
-	public void moveTable(int fromTable, int toTable) {// °­±âÈÆ 
+	// í…Œì´ë¸” ì¶”ê°€
+	// ì •ì¼ì°¬ OrderList orderList parameter ì‚­ì œ
+	public void addTable(int tableNo) {// ê¶Œìˆœì¡°
+		this.tables.put(tableNo, null);
 		
 	}
-	//Å×ÀÌºíÁÖ¹®ÇÕÄ¡±â
-	public void mergeTable(int fromTable, int toTable) {//±Ç¿¹Áö 
-		
+
+	// í…Œì´ë¸” ì‚­ì œ
+	// ì •ì¼ì°¬  int tableNo parameter ì¶”ê°€
+	public void deleteTable(int tableNo) {// ê°•ê¸°í›ˆ
+
 	}
+
 }
 
-// Áß°£¿¡ ´ã´Â ±×¸©ÀÌ ÇÊ¿ä
+// ì¤‘ê°„ì— ë‹´ëŠ” ê·¸ë¦‡ì´ í•„ìš”
 class OrderList {
-	List<Orders> orderlist = new ArrayList<Orders>();
+
+	ArrayList<Orders> orderlist;
 	Customers customer;
-	
-	//ÁÖ¹®³»¿ªÀ» º¸¿©ÁÜ
-	public void listOrders() {// ±Ç¼øÁ¶ 
-		// ¸Ş´º¸í-´Ü°¡-¼ö·®-±İ¾×
-	}
-	
-	//ÁÖ¹®
-	public void addOrder(Orders order) { // Menu menu ½ÅÁöÇõ 
-	
+	//ê°•ê¸°í›ˆ :  isPayedì¶”ê°€
+	boolean isPayed;
+
+	public OrderList() {
+		this.orderlist = new ArrayList<Orders>();
+		this.customer = null;
+		this.isPayed=false;
 	}
 
-	//¼±ÅÃÃë¼Ò
-	public void deleteOrder(Orders order) { // °­±âÈÆ 
-		
+	// ì£¼ë¬¸ë‚´ì—­ì„ ë³´ì—¬ì¤Œ
+	public void listOrders() {// ê¶Œìˆœì¡°
+		// ë©”ë‰´ëª…-ë‹¨ê°€-ìˆ˜ëŸ‰-ê¸ˆì•¡
 	}
-	
-	//ÀüÃ¼Ãë¼Ò
-	public void deleteOrderAll() { // ½ÅÁöÇõ 
-		
+
+	// ì£¼ë¬¸
+	public void addOrder(Orders order) { // Menu menu ì‹ ì§€í˜
+		orderlist.add(order);
 	}
-	
-	// ¿¡¸ÅÇÑ~ ¼ö·®º¯°æ
-	public void changeQty(Menu menu, int qty) { // ÀÏÂù´Ô 
-		
-	}
-	
-	//ÀüºÎ Çö±İ°áÁ¦ // °áÁ¦¿Í ¿À´õ¸®½ºÆ®ÀÇ ¿¬°áÀÌ ¾Ö¸ŞÇÔ
-	public void payCashAll(int amount) {// ±Ç¼øÁ¶ 
-		//¹ŞÀ»±İ¾×, ¹ŞÀº±İ¾×, °Å½º¸§µ·
-		//½ÃÀç¾×°ú ¿¬°áÀÌ ¹ÌÈí
-		//Å×ÀÌºí ÃÊ±âÈ­
-		//¿µ¼öÁõÃâ·Â
-	}
-	
-	/*
-     * @method name : payCardAll
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : ÀüºÎ Ä«µå°áÁ¦
-     *
-     * @parameters : 
-     *
-     * @return : void
-     */
-	public void payCardAll() { // ÀÌÈûÂù 
-		//¹ŞÀº±İ¾×
-		//Å×ÀÌºíÃÊ±âÈ­
-		//¿µ¼öÁõÃâ·Â
-		int amount=0; //±İ¾×
-		for(int i=0; i<orderlist.size();i++) {
-			//orderlist.
+
+	// ì„ íƒì·¨ì†Œ
+	public void deleteOrder(Orders order) { // ê°•ê¸°í›ˆ
+		for (int i = 0; i < orderlist.size(); i++) {
+			if (orderlist.get(i).orderId.equals(order.orderId)) {
+				orderlist.remove(i);
+			}
 		}
 	}
-	
-	public void payCash(int no, int amount) {//±Ç¼øÁ¶ 
-		
-	}
-	
-	public void payCard(int no, int amount) {//±Ç¿¹Áö 
-		
-	}
-	
-	public void payDivideAmount(int amount) {//ÀÏÂù´Ô 
-		
-	}
-	
-	
-	
-//	print receipt
-	public void printReceipt() {// ±Ç¿¹Áö 
-		
-	}
-	
-	//È¸¿øµî·Ï
-	public void addMembers(Customers customers) {// ½ÅÁöÇõ 
-	}
-	
-	//Æ÷ÀÎÆ® Àû¸³
-	public void addPoints(Customers customers, String phoneNumber) {// °­±âÈÆ 
-		
-	}
-	
-	/*
-     * @method name : usePoints
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : Æ÷ÀÎÆ®»ç¿ë
-     *
-     * @parameters : Customers customers, String phoneNumber
-     *
-     * @return : void
-     */
-	public void usePoints(Customers customers, String phoneNumber) {// ÈûÂùÀÌ 
-		
-	}
-	
-	
-	
-	//Æ÷ÀÎÆ® »ç¿ë
 
+	// ì „ì²´ì·¨ì†Œ
+	public void deleteOrderAll() { // ì‹ ì§€í˜
+
+	}
+
+	// ì—ë§¤í•œ~ ìˆ˜ëŸ‰ë³€ê²½
+	public void changeQty(Menu menu, int qty) { // ì¼ì°¬ë‹˜
+
+	}
+
+	/*
+	 * @method name : payCashAll
+	 *
+	 * @date : 2019.03.12
+	 *
+	 * @author : ê¶Œìˆœì¡°
+	 *
+	 * @description : í˜„ê¸ˆìœ¼ë¡œ ê²°ì œ ê¸ˆì•¡ ì „ì•¡ ì²˜ë¦¬í•œë‹¤.
+	 *
+	 * @parameters : int amount
+	 *
+	 * @return : void
+	 */
+
+	// ì „ë¶€ í˜„ê¸ˆê²°ì œ // ê²°ì œì™€ ì˜¤ë”ë¦¬ìŠ¤íŠ¸ì˜ ì—°ê²°ì´ ì• ë©”í•¨
+	public void payCashAll(int amount) {// ê¶Œìˆœì¡° ë°›ì€ í˜„ê¸ˆì´ ë¬¼ê±´ì˜ ì´í•©ë³´ë‹¤ ë†’ìœ¼ë©´ ì‚¬ìš©
+		int exchange = 0;// ê±°ìŠ¤ë¦„ëˆì„ ì €ì¥í•  ê³µê°„ ì„ ì–¸
+		exchange = amount - orderSum();// ë°›ì„ê¸ˆì•¡, ë°›ì€ê¸ˆì•¡, ê±°ìŠ¤ë¦„ëˆ
+		System.out.println(exchange);
+
+		// ì‹œì¬ì•¡ê³¼ ì—°ê²°ì´ ë¯¸í¡
+		// í…Œì´ë¸” ì´ˆê¸°í™”
+		// ì˜ìˆ˜ì¦ì¶œë ¥
+	}
+
+	// ì „ë¶€ ì¹´ë“œê²°ì œ
+	public void payCardAll() { // ì´í˜ì°¬
+		// ë°›ì€ê¸ˆì•¡
+		System.out.println("ê²°ì œ ê¸ˆì•¡ : "+orderSum());
+		// í…Œì´ë¸”ì´ˆê¸°í™”
+		orderlist = null;
+		// ì˜ìˆ˜ì¦ì¶œë ¥
+		printReceipt();
+	}
+
+	/*
+	 * @method name : payCash
+	 *
+	 * @date : 2019.03.12
+	 *
+	 * @author : ê¶Œìˆœì¡°
+	 *
+	 * @description : í˜„ê¸ˆìœ¼ë¡œ ê²°ì œ ê¸ˆì•¡ì„ ì²˜ë¦¬í•œë‹¤.
+	 *
+	 * @parameters : int no, int amount > int amount
+	 *
+	 * @return : int
+	 */
+
+	public int payCash(int amount) {// ê¶Œìˆœì¡°
+
+		int result = 0;// í˜„ê¸ˆì„ í•œë²ˆ ê³„ì‚°í•˜ê³  ë‚¨ì€ ê¸ˆì•¡ì„ ì €ì¥í•  ê³µê°„
+		int sum = 0; // êµ¬ë§¤í•œ ë¬¼í’ˆì˜ ì´í•©ì„ êµ¬í•˜ëŠ” ê³µê°„ ì„ ì–¸
+		result = orderSum() - amount;// ë¬¼ê±´ì˜ ì´í•©ì—ì„œ ë°›ì€ í˜„ê¸ˆì„ Â•é¦¨ ë‚¨ì€ ê²ƒì„ ê²°ê³¼ë¡œ ì €ì¥
+		return result; // ë¦¬í„´í›„ payDividieAmountì—ì„œ ì‚¬ìš©
+	}
+
+	/*
+	 * @method name : payCard
+	 *
+	 * @date : 2019.03.12
+	 *
+	 * @author : ê¶Œìˆœì¡°
+	 *
+	 * @description : í˜„ê¸ˆìœ¼ë¡œ ê²°ì œ ê¸ˆì•¡ì„ ì²˜ë¦¬í•œë‹¤.
+	 *
+	 * @parameters : int no, int amount > int amount
+	 *
+	 * @return : int
+	 */
+
+	public int payCard(int amount) {// ê¶Œì˜ˆì§€
+
+		int result = 0;// í˜„ê¸ˆì„ í•œë²ˆ ê³„ì‚°í•˜ê³  ë‚¨ì€ ê¸ˆì•¡ì„ ì €ì¥í•  ê³µê°„
+		result = orderSum() - amount;// ë¬¼ê±´ì˜ ì´í•©ì—ì„œ ë°›ì€ í˜„ê¸ˆì„ Â•é¦¨ ë‚¨ì€ ê²ƒì„ ê²°ê³¼ë¡œ ì €ì¥
+		return result; // ë¦¬í„´í›„ payDividieAmountì—ì„œ ì‚¬ìš©
+	}
+
+	public void payDivideAmount(int no, int amount) {// ì¼ì°¬ë‹˜
+		if (no == 3) {
+			do {
+				System.out.println("ê²°ì¬ ë°©ì‹ì„ ì„ íƒí•˜ì„¸ìš”");
+				Scanner sc = new Scanner(System.in);
+				int select = Integer.parseInt(sc.nextLine());
+				if (select == 1) {// 1ì„
+					System.out.println("í˜„ê¸ˆ ê²°ì¬ë¥¼ ì„ íƒí•˜ì…¨ìŠµë‹ˆë‹¤.");
+					payCash(amount);
+
+				} else if (select == 2) {
+					System.out.println("ì¹´ë“œ ê²°ì¬ë¥¼ ì„ íƒí•˜ì…¨ìŠµë‹ˆë‹¤.");
+					payCard(amount);
+				}
+			} while (payCard(amount) == 0 || payCash(amount) == 0);
+		}
+	}
+
+//	print receipt
+	public void printReceipt() {// ê¶Œì˜ˆì§€
+
+	}
+
+	// íšŒì›ë“±ë¡
+	public void addMembers(Customers customers) {// ì‹ ì§€í˜
+	}
+
+	// í¬ì¸íŠ¸ ì ë¦½
+	public void addPoints(Customers customers, String phoneNumber, int amount) {// ê°•ê¸°í›ˆ
+		int currPoint = customers.customer.get(phoneNumber);
+		customers.customer.put(phoneNumber, (int) (currPoint + amount * 0.05));
+	}
+
+	// í¬ì¸íŠ¸ ì‚¬ìš©
+	public void usePoints(Customers customers, String phoneNumber) {// í˜ì°¬ì´
+		customers.customer.put(phoneNumber, 0);
+	}
+
+	/*
+	 * @method name : orderSum
+	 *
+	 * @date : 2019.03.12
+	 *
+	 * @author : ê¶Œìˆœì¡°
+	 *
+	 * @description : êµ¬ë§¤í•œ ë¬¼í’ˆ ê¸ˆì•¡ì˜ í•©ê³„ë¥¼ êµ¬í•œë‹¤.
+	 *
+	 * @parameters :
+	 *
+	 * @return : int
+	 */
+	public int orderSum() {
+		int sum = 0; // êµ¬ë§¤í•œ ë¬¼í’ˆì˜ ì´í•©ì„ êµ¬í•˜ëŠ” ê³µê°„ ì„ ì–¸
+//		for (int i = 0; i < orderlist.size(); i++) {// êµ¬ë§¤í•œ ë¬¼í’ˆì˜ ì´í•©ì„ êµ¬í•˜ëŠ” í¬ë¬¸
+//			Orders order = orderlist.get(i);
+//			sum += order.menuItem.price; // sumì— ì €ì¥
+//		}
+		return sum;// í•©ê³„ë¥¼ ë°˜í™˜
+	}
+
+	@Override
+	public String toString() {
+		return "OrderList [orderlist=" + orderlist + ", customer=" + customer + "]";
+	}
 }
 
 class Orders {
-	static Long orderId;
+
+	static Long orderId = 0L;
 	Date orderDate;
-	Menu	menuItem;
+	Menu menuItem;
 	Payments payment;
-	
-	public Orders(Date orderDate, Menu menuItem, Payments payment) {
-		super();
-		this.orderDate = orderDate;
+
+	public Orders(Menu menuItem) {
+		orderId++;
+		this.orderDate = new Date();
+		this.menuItem = menuItem;
+		this.payment = null; // initalization
+	}
+
+	public Orders(Menu menuItem, Payments payment) {
+		orderId++;
+		this.orderDate = new Date();
 		this.menuItem = menuItem;
 		this.payment = payment;
 	}
-	
+
+//	@Override
+//	public String toString() {
+//		return "Orders [orderDate=" + TeamFormat.dateTimeFormat(orderDate) + ", menuItem=" + menuItem + ", payment=" + payment + "]";
+//	}
+
 }
 
 interface Payments {
-//	Çö±İ
-//	Ä«µå
-//	ºĞÇÒ°è»ê
+//	í˜„ê¸ˆ
+//	ì¹´ë“œ
+//	ë¶„í• ê³„ì‚°
 	public void pay();
-		
+
 }
 
 class CashPayments implements Payments {
 
 	@Override
-	public void pay() { //ÀÏÂù´Ô 
+	public void pay() { // ì¼ì°¬ë‹˜
 		System.out.println(PayType.CASH);
 	}
-	/*
-     * @method name : addPoints
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : Æ÷ÀÎÆ®Àû¸³
-     *
-     * @parameters : Customers customers, String phoneNumber
-     *
-     * @return : void
-     */
-	public void addPoints(Customers customers, String phoneNumber) { //ÀÌÈûÂù 
-		int userPoint = customers.customer.get(phoneNumber);
+
+	// í¬ì¸íŠ¸ ì ë¦½
+	public void addPoints(Customers customers, String phoneNumber, int amount) { // ì´í˜ì°¬
+		int currPoint = customers.customer.get(phoneNumber);
+		customers.customer.put(phoneNumber, (int) (currPoint + amount * 0.05));
 	}
-	//Æ÷ÀÎÆ® »ç¿ë
-	public void usePoints(Customers customers, String phoneNumber) {// ±Ç¼øÁ¶ 
-		
+
+	// í¬ì¸íŠ¸ ì‚¬ìš©
+	public void usePoints(Customers customers, String phoneNumber, int amount) {// ê¶Œìˆœì¡°
+
 	}
-	
-	
+
 }
 
 class CardPayments implements Payments {
 
 	@Override
-	public void pay() {// ½ÅÁöÇõ 
+	public void pay() {// ì‹ ì§€í˜
 		System.out.println(PayType.CARD);
 	}
-	
-	//Æ÷ÀÎÆ® Àû¸³
-	public void addPoints(Customers customers, String phoneNumber) {// ±Ç¿¹Áö 
-		
+
+	// í¬ì¸íŠ¸ ì ë¦½
+	public void addPoints(Customers customers, String phoneNumber) {// ê¶Œì˜ˆì§€
+
 	}
-	//Æ÷ÀÎÆ® »ç¿ë
-	public void usePoints(Customers customers, String phoneNumber) {// °­±âÈÆ 
-		
+
+	// í¬ì¸íŠ¸ ì‚¬ìš©
+	public void usePoints(Customers customers, String phoneNumber) {// ê°•ê¸°í›ˆ
+
 	}
 
 }
-
-
-
 
 class Customers {
-	HashMap<String,Integer> customer = new HashMap<String,Integer>();// Å°°ª: ÀüÈ­¹øÈ£,
-	// ¹ë·ù°ª: Æ÷ÀÎÆ® 
-	
-	// °í°´ Ãß°¡
-	public void addCustomers(String phoneNumber) {// ±Ç¼øÁ¶ 
-		
-	}
-	// °í°´ ¼öÁ¤
-	public void modifyCustomers(String oldPhoneNumber, String phoneNumber) {// ÀÏÂù´Ô 
-		
-	}
-	
-	// °í°´ Á¶È¸
-	public void findCustomers(String phoneNumber) { // ½ÅÁöÇõ 
-		
-	}
-	/*
-     * @method name : deleCustomers
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : °í°´ Å»Åğ
-     *
-     * @parameters : String phoneNumber
-     *
-     * @return : void
-     */
-	public void deleCustomers(String phoneNumber) { // ÀÌÈûÂù 
-		customer.remove(phoneNumber);
-		System.out.println("Å»Åğ°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
-	}
-	
-	// °í°´ÇöÈ²
-	public void listCustomers() {// °­±âÈÆ 
-		
-	}
-}
 
+	HashMap<String, Integer> customer;// í‚¤ê°’: ì „í™”ë²ˆí˜¸,
+	// ë°¸ë¥˜ê°’: í¬ì¸íŠ¸
 
-class Pos {
-	
-	Scanner sc = new Scanner(System.in);
-	
-	//log ÀúÀåµğ·ºÅä¸®
-	String logPath = "C:\\temp\\log";
-	
-	// ½ÃÀç±İ¾×
-	Integer amount;
-	List<Orders> orders = new ArrayList<Orders>();
-	OrderList orderList;
-	
-	// ÆÇ¸Å°ü¸®, ¸ÅÃâ°ü¸®, È¸¿ø°ü¸®, ¸Ş´º°ü¸®, Å×ÀÌºí°ü¸®, ½Ã½ºÅÛ Á¾·á
-	
-	// ÁÖ¹®(Å×ÀÌºí)
-	public void orderTable(Integer tableNo, Menu menu) { //ÀÏÂù´Ô 
-		// Å×ÀÌºí¿¡ order add
-	}
-	/*
-     * @method name : addPoints
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : Æ÷ÀÎÆ®Àû¸³
-     *
-     * @parameters : Customers customers, String phoneNumber
-     *
-     * @return : void
-     */
-	// °áÁ¦ (Å×ÀÌºí)
-	public void payTableCash(Integer tableNo, Integer amount) { 
-		// Å×ÀÌºí¿¡¼­ order¸¦ ÇÏ³ª¾¿ °¡Á®¿Í¼­ °áÁ¦ÇÔ
+	public Customers() {
+		this.customer = new HashMap<String, Integer>();
 	}
 
-	public void payTableCard(Integer tableNo) {// ±Ç¼øÁ¶ 
-		// Å×ÀÌºí¿¡¼­ order¸¦ ÇÏ³ª¾¿ °¡Á®¿Í¼­ °áÁ¦ÇÔ
-	}
-
-	// °áÁ¦ (Å×ÀÌºí)
-	public void payTableCardAll(Integer tableNo) { // ÀÏÂù´Ô 
-		// Å×ÀÌºíÀÇ order¸¦ ÇÑ°¡Áö °áÁ¦Çü½ÄÀ¸·Î 
-	}
-	
-	/*
-     * @method name : payTableCashAll
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : ÀüÃ¼ Çö±İ °áÁ¦
-     *
-     * @parameters : Integer tableNo, Integer amount
-     *
-     * @return : void
-     */
-	public void payTableCashAll(Integer tableNo, Integer amount) {
+	// ê³ ê° ì¶”ê°€
+	public void addCustomers(String phoneNumber) {// ê¶Œìˆœì¡°
 //		Scanner sc = new Scanner(System.in);
-//		
-//		//log ÀúÀåµğ·ºÅä¸®
-//		String logPath = "C:\\temp\\log";
-//		
-//		// ½ÃÀç±İ¾×
-//		Integer amount;
-//		List<Orders> orders = new ArrayList<Orders>();
-//		OrderList orderList;
-		
-//		class Orders {
-//			static Long orderId;
-//			Date orderDate;
-//			Menu	menuItem;
-//			Payments payment;	
+//		String PhonNum = sc.nextLine();
+//		if(TeamFormat.iscellPhoneMetPattern(phoneNumber)) {
+//			customer.put(phoneNumber, 0);	
 //		}
 		
+
 	}
-	
-	
-	
-	List<Menu> menuItem = new ArrayList<Menu>();
-	// ¸Ş´º°ü¸®
+
+	// íšŒì›ë“±ë¡ OrderListí´ë˜ìŠ¤ì—ì„œ ì´ë™ë°›ìŒ..
+	public void addMembers(String phoneNumber) {// ì‹ ì§€í˜
+		customer.put(phoneNumber, 0);
+		System.out.println(phoneNumber + "ì¶”ê°€ ì™„ë£Œ");
+	}
+
 	/*
-     * @method name : addMenu
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : ¸Ş´ºÃß°¡
-     *
-     * @parameters : String name, Integer price
-     *
-     * @return : void
-     */
-	public void addMenu(String name, Integer price) { 
-		menuItem.add(new Menu(name, price));	
+	 * @method name : modifyCustomers
+	 *
+	 * @date : 2019.03.12
+	 *
+	 * @author : ì •ì¼ì°¬
+	 *
+	 * @description : ê³ ê°ì •ë³´ë¥¼ ìˆ˜ì •í•œë‹¤.
+	 *
+	 * @parameters : String oldPhoneNumber, String phoneNumber
+	 *
+	 * @return : void
+	 */
+//	public void modifyCustomers(String oldPhoneNumber, String phoneNumber) {
+//		if (TeamFormat.iscellPhoneMetPattern(phoneNumber)) { // í•¸ë“œí° ì •ê·œí‘œí˜„ì‹
+//			if (customer.containsKey(oldPhoneNumber)) {
+//				customer.put(phoneNumber, customer.get(oldPhoneNumber)); // í¬ì¸íŠ¸ë¥¼ ìƒˆë¡œìš´ í•¸ë“œí°ìœ¼ë¡œ ì˜®ê¹€
+//				customer.remove(oldPhoneNumber); // ê¸°ì¡´ í°ë„˜ë²„ ì‚­ì œ
+//			}
+//		} else {
+//			System.out.println("í•¸ë“œí°ë²ˆí˜¸ë¥¼ í™•ì¸í•˜ê³  ì…ë ¥í•˜ì„¸ìš”");
+//		}
+//	}
+
+	// ê³ ê° ì¡°íšŒ
+	public void findCustomers(String phoneNumber) { // ì‹ ì§€í˜
+		if (customer.get(phoneNumber) != null)
+			System.out.println(phoneNumber + "ì˜ í¬ì¸íŠ¸ëŠ” : " + customer.get(phoneNumber) + "ì› ì…ë‹ˆë‹¤");
+		else
+			System.out.println("ê³ ê°ì´ì•„ë‹™ë‹ˆë‹¤");
 	}
-	// ¸Ş´º ¼öÁ¤
-	public void modifyMenu(String oldname, String name, Integer price) {// ½ÅÁöÇõ 
-		
+
+	// ê³ ê° íƒˆí‡´
+	public void deleCustomers(String phoneNumber) { // ì´í˜ì°¬
+		if(customer.get(phoneNumber) != null) {
+			customer.remove(phoneNumber);
+			System.out.println("íƒˆí‡´ ë˜ì—ˆìŠµë‹ˆë‹¤.");
+		}else {
+			System.out.println("í•´ë‹¹ ì „í™”ë²ˆí˜¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
+		}			
 	}
-	// ¸Ş´º »èÁ¦
-	public void deleteMenu(String name) {// ±Ç¿¹Áö 
-		
+
+	// ê³ ê° í˜„í™©
+	public void listCustomers() {// ê°•ê¸°í›ˆ
+		for (Map.Entry<String, Integer> obj : customer.entrySet()) {
+			System.out.println("ì „í™”ë²ˆí˜¸:" + obj.getKey() + "/ Point:" + obj.getValue());
+
+		}
+
 	}
 	
-	// Å×ÀÌºí°ü¸®
-	List<Table> tables = new ArrayList<Table>();
-	// Å×ÀÌºí Ãß°¡
-	public void addTables() {// ±Ç¼øÁ¶ 
-		
-	}
-	// Å×ÀÌºí »èÁ¦
-	public void deleteTables() {//°­±âÈÆ 
-		
+	@Override
+	public String toString() {
+		return "Customers [customer=" + customer + "]";
 	}
 	
-	// °í°´°ü¸®
-	Customers customers = new Customers(); 
 	
-	//°í°´°¡ÀÔ
+}
+
+class Pos {
+
+	Scanner sc = new Scanner(System.in);
+
+	// log ì €ì¥ë””ë ‰í† ë¦¬
+	String logPath = "C:\\temp\\log";
+
+	// ì‹œì¬ê¸ˆì•¡
+	Integer amount=200000;
+	List<Orders> orders = new ArrayList<Orders>();
+	OrderList orderList;
+	Table tables = new Table();
+	List<Menu> menuItem = new ArrayList<Menu>();
+	Customers customers = new Customers();
+
+	// íŒë§¤ê´€ë¦¬, ë§¤ì¶œê´€ë¦¬, íšŒì›ê´€ë¦¬, ë©”ë‰´ê´€ë¦¬, í…Œì´ë¸”ê´€ë¦¬, ì‹œìŠ¤í…œ ì¢…ë£Œ
+
+	// ì£¼ë¬¸(í…Œì´ë¸”)
+	public void orderTable(Integer tableNo, Menu menu) { // ì¼ì°¬ë‹˜
+		// í…Œì´ë¸”ì— order add
+	}
+
+	// ê²°ì œ (í…Œì´ë¸”)
+	public void payTableCash(Integer tableNo) {// ì´í˜ì°¬ 
+		// í…Œì´ë¸”ì—ì„œ orderë¥¼ í•˜ë‚˜ì”© ê°€ì ¸ì™€ì„œ ê²°ì œí•¨
+		for(int i=0 ; i<tables.tables.get(tableNo).orderlist.size();i++) {
+			String menu = tables.tables.get(tableNo).orderlist.get(i).menuItem.name; //ë©”ë‰´ì´ë¦„
+			int price = tables.tables.get(tableNo).orderlist.get(i).menuItem.price;  //ê°€ê²©
+			System.out.print(menu +", "+ price+"ì› ì…ë‹ˆë‹¤~ ëˆì„ ì…ë ¥í•˜ì„¸ìš” : ");
+			int amount = sc.nextInt();
+			if(amount<price) {
+				System.out.println("ê¸ˆì•¡ì´ ë¶€ì¡±í•©ë‹ˆë‹¤");
+				i--;
+				break;
+			}else {
+				System.out.println("ë°›ì€ëˆ : "+ amount);
+				System.out.println("ì”ëˆ : "+(amount-price));
+			}
+		}
+	}
+
+	public void payTableCard(Integer tableNo) {// ê¶Œìˆœì¡°
+		// í…Œì´ë¸”ì—ì„œ orderë¥¼ í•˜ë‚˜ì”© ê°€ì ¸ì™€ì„œ ê²°ì œí•¨
+	}
+
+	// ê²°ì œ (í…Œì´ë¸”)
+	public void payTableCardAll(Integer tableNo) { // ì¼ì°¬ë‹˜
+		// í…Œì´ë¸”ì˜ orderë¥¼ í•œê°€ì§€ ê²°ì œí˜•ì‹ìœ¼ë¡œ
+	}
+
+	public void payTableCashAll(Integer tableNo, Integer amount) {// ì´í˜ì°¬
+		int price = tables.tables.get(tableNo).orderSum(); //ê°€ê²©
+		int change = amount-price; //ì”ëˆ
+		System.out.println("ë°›ì€ëˆ : amount");
+		System.out.println("ì”   ëˆ : change");
+	}
+
+
+	// ë©”ë‰´ê´€ë¦¬
+	// ë©”ë‰´ ì¶”ê°€
+	public void addMenu(String name, Integer price) {// ì´í˜ì°¬
+		menuItem.add(new Menu(name, price));
+	}
+
+	// ë©”ë‰´ ìˆ˜ì •
+	public void modifyMenu(String oldname, String name, Integer price) {// ì‹ ì§€í˜
+	}
+
+	// ë©”ë‰´ ì‚­ì œ
+	public void deleteMenu(String name) {// ê¶Œì˜ˆì§€
+
+	}
 	
-	//°í°´Á¶È¸
-	//°í°´Å»Åğ
-	//°í°´ÇöÈ²
-	
+	public Menu getMenu(String name) {
+		Menu menu=null;
+		for (Menu m : menuItem) {
+			if(m.name.trim().equalsIgnoreCase(name)) {
+				menu=m;
+			}
+		}
+		return menu;
+
+	}
+
+	// ê³ ê°ê´€ë¦¬
+
+	// ê³ ê°ê°€ì…
+
+	// ê³ ê°ì¡°íšŒ
+	// ê³ ê°íƒˆí‡´
+	// ê³ ê°í˜„í™©
+
 	// overloading
 //	public void deleCustomers(String name) {
 //		
 //	}
-	
-	
-	/*
-     * @method name : cashAdjustment
-     *
-     * @date : 2019.03.12
-     *
-     * @author : ÀÌÈûÂù
-     *
-     * @description : Çö±İ½ÃÀç¾×À» º¸¿©ÁØ´Ù
-     *
-     * @parameters : 
-     *
-     * @return : void
-     */	
-	public void cashAdjustment() { 
-		int cashonhand = 100000;
-		 System.out.println("Çö±İ½ÃÀç¾× : "+cashonhand);
-	}
-	// ¸ÅÃâ
-	// ¸Ş´ºº° ¸ÅÃâ (ÀÏº°)
-	public void printSalesMenu(String date) { //°­±âÈÆ 
-		// ¸Ş´º-¼ö·®-±İ¾×
+
+	// í˜„ê¸ˆê´€ë¦¬
+	public void cashAdjustment() { // ì´í˜ì°¬
+		// í˜„ê¸ˆì‹œì¬ì•¡ì„ ë³´ì—¬ì¤€ë‹¤
+		System.out.println("í˜„ê¸ˆì‹œì¬ì•¡ : "+amount);
 	}
 
-	// °áÁ¦º° ¸ÅÃâ (ÀÏº°)
-	public void printSalesPayment(String date) { // ½ÅÁöÇõ 
-		// ¸Ş´º-Ä«µå(Çö±İ)-¼ö·®-±İ¾×
+	// ë§¤ì¶œ
+	// ë©”ë‰´ë³„ ë§¤ì¶œ (ì¼ë³„)
+	public void printSalesMenu(String date) { // ê°•ê¸°í›ˆ
+		// ë©”ë‰´-ìˆ˜ëŸ‰-ê¸ˆì•¡
 	}
 
-	// ¿¢¼¿ export (¸Ş´ºº°,°áÁ¦º° ¸ÅÃâ)
-	public void exportToExcel(String salesType) {// ÀÏÂù´Ô 
-		
+	// ê²°ì œë³„ ë§¤ì¶œ (ì¼ë³„)
+	public void printSalesPayment(String date) { // ì‹ ì§€í˜
+		// ë©”ë‰´-ì¹´ë“œ(í˜„ê¸ˆ)-ìˆ˜ëŸ‰-ê¸ˆì•¡
 	}
 
-	// µ¥ÀÌÅÍ ÀúÀå (½Ã½ºÅÛ Á¾·á½Ã µ¥ÀÌÅÍ ÀúÀå)
-	public void save(String date) { //±Ç¿¹Áö 
-		
+	// ì—‘ì…€ export (ë©”ë‰´ë³„,ê²°ì œë³„ ë§¤ì¶œ)
+	public void exportToExcel(String salesType) {// ì¼ì°¬ë‹˜
+
 	}
-	// µ¥ÀÌÅÍ ·Îµå (½Ã½ºÅÛ ½ÃÀÛ½Ã µ¥ÀÌÅÍ ·Îµå)
-	public void load(String date) {// ±Ç¿¹Áö 
-		
+
+	// ë°ì´í„° ì €ì¥ (ì‹œìŠ¤í…œ ì¢…ë£Œì‹œ ë°ì´í„° ì €ì¥)
+	public void save(String date) { // ê¶Œì˜ˆì§€
+
 	}
-	// ÀÏº° log // method¸¶´Ù util¿¡¼­ Á¤ÀÇµÈ °ÍÀ» »ç¿ë
+
+	// ë°ì´í„° ë¡œë“œ (ì‹œìŠ¤í…œ ì‹œì‘ì‹œ ë°ì´í„° ë¡œë“œ)
+	public void load(String date) {// ê¶Œì˜ˆì§€
+
+	}
+	// ì¼ë³„ log // methodë§ˆë‹¤ utilì—ì„œ ì •ì˜ëœ ê²ƒì„ ì‚¬ìš©
 }
 
 public class Pro1_Frame {
 	public static void main(String[] args) {
 
+		Pos pos=new Pos();
+		pos.addMenu("ì§œì¥", 5000);
+		pos.addMenu("ì§¬ë½•", 6000);
+		pos.addMenu("ìš°ë™", 5500);
+		
+		Menu pickMenu=pos.getMenu("ì§œì¥");
+
+		System.out.println(pickMenu.toString());
+
+		// Order ìƒì„±
+		Orders order1=new Orders(pos.getMenu("ì§œì¥"));
+		Orders order2=new Orders(pos.getMenu("ì§¬ë½•"));
+		
+		System.out.println(order1.toString());
+		
+		// OrderList ìƒì„±
+		OrderList orderList=new OrderList();
+		orderList.addOrder(order1);
+		orderList.addOrder(order2);
+		System.out.println(orderList.toString());
+		
+		// Table 
+		Table tables = new Table();
+		
+		// add table
+		tables.addTable(1);
+		tables.addTable(2);
+		tables.addTable(3);
+		tables.addTable(4);
+		System.out.println(tables.tables.toString());
+		// add OrderList to Table
+		tables.addOrderList(1, orderList);
+		System.out.println(tables.tables.toString());
+		
+		int price = tables.tables.get(1).orderSum();
+		System.out.println(price);
+/*		
+		Scanner sc = new Scanner(System.in);
+		System.out.println("í…ŒìŠ¤íŠ¸ : "+tables.tables.get(1).orderlist);
+		for(int i=0 ; i<tables.tables.get(1).orderlist.size();i++) {
+			System.out.println(i);
+			String menu = tables.tables.get(1).orderlist.get(i).menuItem.name; //ë©”ë‰´ì´ë¦„
+			int price = tables.tables.get(1).orderlist.get(i).menuItem.price;  //ê°€ê²©
+			System.out.print(menu +", "+ price+"ì› ì…ë‹ˆë‹¤~ ëˆì„ ì…ë ¥í•˜ì„¸ìš” : ");
+			int amount = sc.nextInt();
+			if(amount<price) {
+				System.out.println("ê¸ˆì•¡ì´ ë¶€ì¡±í•©ë‹ˆë‹¤");
+				i--;
+			}else {
+				System.out.println("ë°›ì€ëˆ : "+ amount);
+				System.out.println("ì”ëˆ : "+(amount-price));
+			}
+		}
+*/	
+//		pos.payTableCash(1);
+		
+//		// ê²°ì œ
+//		Customers sonnom = new Customers();
+//		sonnom.addCustomers("010-2222-3333");
+//		System.out.println("ì†ë‹˜ : " + sonnom.customer.toString());
+//
+//		
+//		int yourbill = 20000;
+//		// cash
+//		OrderList afterLunch=tables.tables.get(1);
+//		for(int i=0; i<afterLunch.orderlist.size();i++) {
+//			afterLunch.orderlist.get(i).payment=new CashPayments();
+//			yourbill -= afterLunch.orderlist.get(i).menuItem.price;
+//			//point ì ë¦½
+//			int new_point=sonnom.customer.get("010-2222-3333") + (int)(afterLunch.orderlist.get(i).menuItem.price*0.05);
+//			sonnom.customer.put("010-2222-3333", new_point);
+//			afterLunch.orderlist.get(i).payment.pay();
+//			
+//		}
+//		// ê²°ì œì™„ë£Œ
+//		afterLunch.isPayed=true;
+//		System.out.println(yourbill);
+//		System.out.println("ì†ë‹˜ì˜ í¬ì¸íŠ¸ : " + sonnom.customer.toString());
+		
 	}
 }
